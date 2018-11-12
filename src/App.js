@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { Table, Button, Form } from 'semantic-ui-react'
 import PresRow from './PresRow';
 
-const API = `https://corcoran-pres-back.herokuapp.com/api/v1/presidents/`
+const API = `http://localhost:3000/api/v1/presidents/`
 
 class App extends Component {
 
