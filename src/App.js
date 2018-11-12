@@ -1,74 +1,74 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
-import './App.css';
-import _ from 'lodash'
-import { Table, Container, Button } from 'semantic-ui-react'
-import UUID from 'uuid';
+// import './App.css';
+import { Table, Button, Form } from 'semantic-ui-react'
+import PresRow from './PresRow';
+
+const API = `https://corcoran-pres-back.herokuapp.com/api/v1/presidents/`
 
 class App extends Component {
 
   state = {
-    column: null,
-    data: tableData,
-    direction: null,
+    data: null,
   }
 
-  handleSort = clickedColumn => () => {
-    const { column, data, direction } = this.state
+  componentDidMount = () => {
+    fetch(API).then(res => res.json()).then(
+      data => {
+        this.setState({
+          data: data
+        })
+      }
+    )
+  }
 
-    if (column !== clickedColumn) {
-      this.setState({
-        column: clickedColumn,
-        data: _.sortBy(data, [clickedColumn]),
-        direction: 'ascending',
-      })
+  getNewData = (arg) => {
+    fetch(API+arg).then(res => res.json()).then(
+      data => {
+        this.setState({
+          data: data
+        })
+      }
+    )
+  }
 
-      return
-    }
-
-    this.setState({
-      data: data.reverse(),
-      direction: direction === 'ascending' ? 'descending' : 'ascending',
+  getAllRows = () => {
+    return this.state.data.map(pres => {
+      return <PresRow pres={pres}/>
     })
   }
 
-  render() {
-    const { column, data, direction } = this.state
-
+  tableRender = () => {
     return (
-      <Table sortable celled fixed>
+      <Table celled fixed inverted selectable>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell
-              sorted={column === 'name' ? direction : null}
-              onClick={this.handleSort('name')}
-            >
-              Name
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={column === 'age' ? direction : null}
-              onClick={this.handleSort('age')}
-            >
-              Age
-            </Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={column === 'gender' ? direction : null}
-              onClick={this.handleSort('gender')}
-            >
-              Gender
-            </Table.HeaderCell>
+            <Table.HeaderCell>President</Table.HeaderCell>
+            <Table.HeaderCell>Birthday</Table.HeaderCell>
+            <Table.HeaderCell>Birthplace</Table.HeaderCell>
+            <Table.HeaderCell>Death Day</Table.HeaderCell>
+            <Table.HeaderCell>Death Place</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
+
         <Table.Body>
-          {_.map(data, ({ age, gender, name }) => (
-            <Table.Row key={name}>
-              <Table.Cell>{name}</Table.Cell>
-              <Table.Cell>{age}</Table.Cell>
-              <Table.Cell>{gender}</Table.Cell>
-            </Table.Row>
-          ))}
+          {this.getAllRows()}
         </Table.Body>
       </Table>
+    )
+  }
+
+  render() {
+    console.log(API);
+
+    return (
+      <div>
+        <Button.Group >
+          <Form.Button color='black' onClick={() => this.getNewData("ascending")} content='Ascending' />
+          <Form.Button color='black' onClick={() => this.getNewData("descending")} content='Descending' />
+        </Button.Group>
+        {this.state.data ? this.tableRender() : null}
+      </div>
     )
   }
 }
