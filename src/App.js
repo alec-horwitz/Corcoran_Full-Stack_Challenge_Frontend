@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
-// import './App.css';
 import { Table, Button, Form } from 'semantic-ui-react'
 import PresRow from './PresRow';
-
-const API = `http://localhost:3000/api/v1/presidents/`
 
 class App extends Component {
 
@@ -13,17 +9,11 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    fetch(API).then(res => res.json()).then(
-      data => {
-        this.setState({
-          data: data
-        })
-      }
-    )
+    this.getNewData("")
   }
 
   getNewData = (arg) => {
-    fetch(API+arg).then(res => res.json()).then(
+    fetch(`http://localhost:3000/api/v1/presidents/`+arg).then(res => res.json()).then(
       data => {
         this.setState({
           data: data
@@ -59,8 +49,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(API);
-
     return (
       <div>
         <Button.Group >
